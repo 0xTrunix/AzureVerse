@@ -64,6 +64,47 @@
     linear-gradient(180deg, #050505 0%, #0d0d0d 52%, #080808 100%);
 }
 
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-scene-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(60px);
+  opacity: calc(0.28 - (var(--hero-progress, 0) * 0.12));
+  transform: translate3d(0, calc(var(--hero-progress, 0) * -20px), 0);
+}
+
+.hero-scene-glow-a {
+  top: 10%;
+  left: 14%;
+  width: 26vw;
+  height: 26vw;
+  max-width: 360px;
+  max-height: 360px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 68%);
+}
+
+.hero-scene-glow-b {
+  right: 10%;
+  bottom: 18%;
+  width: 22vw;
+  height: 22vw;
+  max-width: 280px;
+  max-height: 280px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+}
+
+.hero-scene-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 38%, transparent 0%, rgba(0, 0, 0, 0.18) 54%, rgba(0, 0, 0, 0.42) 100%);
+}
+
 .hero-toolbar {
   position: absolute;
   top: 18px;
@@ -132,6 +173,9 @@
   display: grid;
   place-items: center;
   padding-top: 84px;
+  transform: translateY(calc(var(--hero-progress, 0) * -48px));
+  opacity: calc(1 - (var(--hero-progress, 0) * 0.42));
+  transition: transform 120ms linear, opacity 120ms linear;
 }
 
 .flower-petal {
@@ -139,15 +183,25 @@
   width: clamp(126px, 12vw, 194px);
   height: clamp(244px, 22vw, 348px);
   border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(151, 151, 151, 0.18) 72%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow:
-    inset 0 0 18px rgba(255, 255, 255, 0.18),
-    0 16px 40px rgba(0, 0, 0, 0.26);
+  display: block;
   transform-origin: center bottom;
   opacity: 0;
-  animation: bloomIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  filter: blur(calc(var(--hero-progress, 0) * 3px));
+  animation: bloomIn 1.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.flower-petal-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(155, 155, 155, 0.24) 64%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  box-shadow:
+    inset 0 0 18px rgba(255, 255, 255, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.3);
+  animation: petalFloat 7s ease-in-out infinite;
 }
 
 .flower-petal-top {
@@ -194,6 +248,7 @@
     0 0 0 22px rgba(255, 255, 255, 0.03),
     0 0 0 42px rgba(255, 255, 255, 0.02),
     0 0 56px rgba(255, 255, 255, 0.09);
+  transform: translateY(calc(var(--hero-progress, 0) * -16px));
 }
 
 .flower-core img {
@@ -208,6 +263,8 @@
   z-index: 2;
   align-self: end;
   max-width: 760px;
+  transform: translateY(calc(var(--hero-progress, 0) * 18px));
+  opacity: calc(1 - (var(--hero-progress, 0) * 0.18));
 }
 
 .hero-copy h1 {
@@ -266,6 +323,8 @@
   display: grid;
   gap: 14px;
   align-self: end;
+  transform: translateY(calc(var(--hero-progress, 0) * 24px));
+  opacity: calc(1 - (var(--hero-progress, 0) * 0.2));
 }
 
 .metric-card {
@@ -669,11 +728,22 @@
 @keyframes bloomIn {
   from {
     opacity: 0;
-    filter: blur(14px);
+    filter: blur(18px);
+    transform: scale(0.28);
   }
   to {
     opacity: 1;
     filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@keyframes petalFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
   }
 }
 

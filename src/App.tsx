@@ -1,5 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent, ReactElement } from 'react'
+import type { CSSProperties } from 'react'
 import './App.css'
 import galleryData from './data/gallery.json'
 import { categoryCopy, categoryOrder, colorCopy, colorOrder, translations } from './content/catalogue'
@@ -75,6 +76,7 @@ function App(): ReactElement {
   const [globalColor, setGlobalColor] = useState<Color>('全部')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
+  const [heroProgress, setHeroProgress] = useState(0)
   const [openSections, setOpenSections] = useState<Set<Category>>(new Set(['戒指', '项链']))
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const t: TranslationCopy = translations[language]
@@ -87,7 +89,9 @@ function App(): ReactElement {
 
   useEffect(() => {
     const onScroll = (): void => {
-      setShowBrandRail(window.scrollY > window.innerHeight * 0.58)
+      const nextProgress = Math.max(0, Math.min(1, window.scrollY / Math.max(window.innerHeight * 0.9, 1)))
+      setHeroProgress(nextProgress)
+      setShowBrandRail(window.scrollY > window.innerHeight * 0.72)
     }
 
     onScroll()
@@ -173,6 +177,14 @@ function App(): ReactElement {
       </div>
 
       <section className="hero-stage">
+        <div
+          className="hero-scene"
+          style={{ ['--hero-progress' as string]: heroProgress.toFixed(3) } as CSSProperties}
+        >
+          <div className="hero-scene-glow hero-scene-glow-a"></div>
+          <div className="hero-scene-glow hero-scene-glow-b"></div>
+          <div className="hero-scene-vignette"></div>
+        </div>
         <div className="hero-toolbar">
           <div className="hero-brand-pill">
             <img src="/az-monogram.png" alt="Azure Jewelry monogram" />
@@ -193,12 +205,24 @@ function App(): ReactElement {
         </div>
 
         <div className="hero-flower" aria-hidden="true">
-          <span className="flower-petal flower-petal-top"></span>
-          <span className="flower-petal flower-petal-top-right"></span>
-          <span className="flower-petal flower-petal-bottom-right"></span>
-          <span className="flower-petal flower-petal-bottom"></span>
-          <span className="flower-petal flower-petal-bottom-left"></span>
-          <span className="flower-petal flower-petal-top-left"></span>
+          <span className="flower-petal flower-petal-top">
+            <span className="flower-petal-inner"></span>
+          </span>
+          <span className="flower-petal flower-petal-top-right">
+            <span className="flower-petal-inner"></span>
+          </span>
+          <span className="flower-petal flower-petal-bottom-right">
+            <span className="flower-petal-inner"></span>
+          </span>
+          <span className="flower-petal flower-petal-bottom">
+            <span className="flower-petal-inner"></span>
+          </span>
+          <span className="flower-petal flower-petal-bottom-left">
+            <span className="flower-petal-inner"></span>
+          </span>
+          <span className="flower-petal flower-petal-top-left">
+            <span className="flower-petal-inner"></span>
+          </span>
           <span className="flower-core">
             <img src="/az-monogram.png" alt="" />
           </span>
