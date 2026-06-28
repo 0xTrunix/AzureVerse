@@ -291,24 +291,6 @@ function App(): ReactElement {
                     <h3>{sectionText.label}</h3>
                     <span className="category-arrow" aria-hidden="true"></span>
                   </button>
-                  {!isColorFiltered ? (
-                    <div className="section-colors">
-                      {section.colors.map((color) => (
-                        <button
-                          key={`${section.category}-${color}`}
-                          type="button"
-                          className="section-color-chip"
-                          data-color={color}
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            jumpToColorGroup(section.category, color)
-                          }}
-                        >
-                          {colorCopy[color][language]}
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
               </div>
 
@@ -341,6 +323,19 @@ function App(): ReactElement {
                   </div>
                 ) : (
                   <div className="accordion-groups">
+                    <div className="section-colors">
+                      {section.colors.map((color) => (
+                        <button
+                          key={`${section.category}-${color}`}
+                          type="button"
+                          className="section-color-chip"
+                          data-color={color}
+                          onClick={() => jumpToColorGroup(section.category, color)}
+                        >
+                          {colorCopy[color][language]}
+                        </button>
+                      ))}
+                    </div>
                     {section.byColor.map((group) => {
                       const groupKey = `${section.category}-${group.color}`
                       const isGroupOpen = openColorGroups.has(groupKey)

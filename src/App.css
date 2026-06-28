@@ -318,7 +318,6 @@
   width: min(100%, 1080px);
   display: grid;
   justify-items: center;
-  gap: 22px;
 }
 
 .category-heading {
@@ -509,7 +508,7 @@
 
 .accordion-groups {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   width: 100%;
 }
 
