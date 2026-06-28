@@ -14,10 +14,10 @@
 .glass-section,
 .glass-card {
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 14px 38px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
   backdrop-filter: blur(22px) saturate(120%);
   -webkit-backdrop-filter: blur(22px) saturate(120%);
 }
@@ -193,7 +193,7 @@
 
 .chip,
 .section-color-chip,
-.accordion-trigger,
+.category-heading,
 .color-group-head,
 .gallery-card,
 .lightbox-close {
@@ -210,7 +210,7 @@
 
 .control-panel {
   margin-top: 20px;
-  padding: 24px;
+  padding: 32px 24px 28px;
   scroll-margin-top: 92px;
   text-align: center;
 }
@@ -235,17 +235,17 @@
 .global-filter-row {
   display: grid;
   justify-items: center;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 16px;
+  margin-top: 28px;
 }
 
 .chip-row {
   display: flex;
-  width: min(100%, 760px);
-  gap: 12px;
-  justify-content: center;
+  width: min(100%, 940px);
+  gap: clamp(10px, 2.2vw, 24px);
+  justify-content: space-evenly;
   overflow-x: auto;
-  padding: 4px 2px 8px;
+  padding: 6px 8px 10px;
   scrollbar-width: none;
 }
 
@@ -254,18 +254,27 @@
 }
 
 .chip {
-  min-height: 40px;
+  min-height: 46px;
   flex: 0 0 auto;
-  min-width: 84px;
-  padding: 10px 18px;
+  min-width: 112px;
+  padding: 12px 22px;
   border-radius: 999px;
-  color: rgba(255, 255, 255, 0.76);
-  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.12);
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .chip.is-active {
   color: #050505;
   background: #ffffff;
+}
+
+.chip:not(.is-active):hover,
+.section-color-chip:hover {
+  transform: translateY(-1px);
 }
 
 .filter-summary {
@@ -288,6 +297,11 @@
 .category-accordion {
   width: 100%;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.055);
+  box-shadow:
+    0 10px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
 }
 
 .accordion-trigger {
@@ -301,23 +315,27 @@
 }
 
 .accordion-left {
-  width: min(100%, 860px);
+  width: min(100%, 1080px);
   display: grid;
   justify-items: center;
-  gap: 16px;
+  gap: 22px;
 }
 
 .category-heading {
   position: relative;
-  width: min(620px, 100%);
-  min-height: 72px;
+  width: 100%;
+  min-height: 92px;
   display: flex;
   align-items: baseline;
   justify-content: center;
   padding: 12px 64px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.038);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 14px 30px rgba(0, 0, 0, 0.1);
 }
 
 .accordion-left h3 {
@@ -347,12 +365,12 @@
 
 .section-colors {
   display: flex;
-  width: min(100%, 760px);
+  width: 100%;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-evenly;
+  gap: clamp(10px, 2vw, 22px);
   overflow-x: auto;
-  padding: 2px 4px 8px;
+  padding: 2px 8px 8px;
   scrollbar-width: none;
 }
 
@@ -385,7 +403,92 @@
 }
 
 .section-color-chip {
+  min-width: 88px;
+  min-height: 38px;
+  padding-inline: 18px;
   border: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.12);
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.chip[data-color="蓝色"],
+.section-color-chip[data-color="蓝色"],
+.mood-tag[data-color="蓝色"] {
+  background: rgba(104, 164, 255, 0.14);
+}
+
+.chip[data-color="黄色"],
+.section-color-chip[data-color="黄色"],
+.mood-tag[data-color="黄色"] {
+  background: rgba(255, 214, 118, 0.16);
+}
+
+.chip[data-color="绿色"],
+.section-color-chip[data-color="绿色"],
+.mood-tag[data-color="绿色"] {
+  background: rgba(95, 218, 154, 0.14);
+}
+
+.chip[data-color="红色"],
+.section-color-chip[data-color="红色"],
+.mood-tag[data-color="红色"] {
+  background: rgba(255, 96, 108, 0.14);
+}
+
+.chip[data-color="粉色"],
+.section-color-chip[data-color="粉色"],
+.mood-tag[data-color="粉色"] {
+  background: rgba(255, 146, 190, 0.15);
+}
+
+.chip[data-color="白钻"],
+.section-color-chip[data-color="白钻"],
+.mood-tag[data-color="白钻"] {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.chip.is-active[data-color="蓝色"],
+.section-color-chip[data-color="蓝色"]:hover,
+.color-badge[data-color="蓝色"] {
+  color: #08111f;
+  background: rgba(183, 214, 255, 0.92);
+}
+
+.chip.is-active[data-color="黄色"],
+.section-color-chip[data-color="黄色"]:hover,
+.color-badge[data-color="黄色"] {
+  color: #171000;
+  background: rgba(255, 231, 160, 0.92);
+}
+
+.chip.is-active[data-color="绿色"],
+.section-color-chip[data-color="绿色"]:hover,
+.color-badge[data-color="绿色"] {
+  color: #05180d;
+  background: rgba(174, 242, 202, 0.9);
+}
+
+.chip.is-active[data-color="红色"],
+.section-color-chip[data-color="红色"]:hover,
+.color-badge[data-color="红色"] {
+  color: #1e0508;
+  background: rgba(255, 183, 190, 0.9);
+}
+
+.chip.is-active[data-color="粉色"],
+.section-color-chip[data-color="粉色"]:hover,
+.color-badge[data-color="粉色"] {
+  color: #210614;
+  background: rgba(255, 204, 225, 0.92);
+}
+
+.chip.is-active[data-color="白钻"],
+.section-color-chip[data-color="白钻"]:hover,
+.color-badge[data-color="白钻"] {
+  color: #050505;
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .accordion-content {
@@ -569,7 +672,10 @@
 
 .lang-pill:focus-visible,
 .chip:focus-visible,
+.section-color-chip:focus-visible,
+.category-heading:focus-visible,
 .accordion-trigger:focus-visible,
+.color-group-head:focus-visible,
 .gallery-card:focus-visible,
 .search-box input:focus-visible,
 .lightbox-close:focus-visible {

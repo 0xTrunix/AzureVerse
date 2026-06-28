@@ -249,19 +249,9 @@ function App(): ReactElement {
             <p className="eyebrow">{t.catalogue}</p>
             <h2>{t.catalogueTitle}</h2>
           </div>
-          <label className="search-box">
-            <span>{t.search}</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t.searchPlaceholder}
-            />
-          </label>
         </div>
 
         <div className="global-filter-row">
-          <span className="filter-label">{t.quickColor}</span>
           <div className="chip-row">
             {(['全部', ...colorOrder] as const).map((color) => (
               <button
@@ -269,6 +259,7 @@ function App(): ReactElement {
                 type="button"
                 className={color === globalColor ? 'chip is-active' : 'chip'}
                 onClick={() => startTransition(() => setGlobalColor(color))}
+                data-color={color}
               >
                 {colorCopy[color][language]}
               </button>
@@ -287,24 +278,24 @@ function App(): ReactElement {
               key={section.category}
               className={isOpen ? 'category-accordion glass-section is-open' : 'category-accordion glass-section'}
             >
-              <button
-                type="button"
-                className="accordion-trigger"
-                onClick={() => toggleSection(section.category)}
-                aria-expanded={isOpen}
-              >
+              <div className="accordion-trigger">
                 <div className="accordion-left">
-                  <div className="category-heading">
+                  <button
+                    type="button"
+                    className="category-heading"
+                    onClick={() => toggleSection(section.category)}
+                    aria-expanded={isOpen}
+                  >
                     <h3>{sectionText.label}</h3>
                     <span className="category-arrow" aria-hidden="true"></span>
-                  </div>
+                  </button>
                   <div className="section-colors">
-                    <span className="section-colors-label">{t.colorNote}</span>
                     {section.colors.map((color) => (
                       <button
                         key={`${section.category}-${color}`}
                         type="button"
                         className="section-color-chip"
+                        data-color={color}
                         onClick={(event) => {
                           event.stopPropagation()
                           jumpToColorGroup(section.category, color)
@@ -315,7 +306,7 @@ function App(): ReactElement {
                     ))}
                   </div>
                 </div>
-              </button>
+              </div>
 
               <div className="accordion-content">
                 <div className="accordion-groups">
@@ -335,7 +326,7 @@ function App(): ReactElement {
                           onClick={() => toggleColorGroup(groupKey)}
                           aria-expanded={isGroupOpen}
                         >
-                          <span className="color-badge">{colorCopy[group.color][language]}</span>
+                          <span className="color-badge" data-color={group.color}>{colorCopy[group.color][language]}</span>
                           <span className="color-group-arrow" aria-hidden="true"></span>
                         </button>
                         <div className="gallery-scroll">
@@ -355,13 +346,13 @@ function App(): ReactElement {
                                 <div className="gallery-body">
                                   <div className="card-head">
                                     <span className="image-id">{item.id}</span>
-                                    <span className="mood-tag">{colorCopy[item.color][language]}</span>
+                                    <span className="mood-tag" data-color={item.color}>{colorCopy[item.color][language]}</span>
                                   </div>
                                   <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
                                 </div>
                               </article>
                             ))}
-                            </div>
+                          </div>
                         </div>
                       </div>
                     )
