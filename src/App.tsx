@@ -75,6 +75,7 @@ function App(): ReactElement {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
   const [openSections, setOpenSections] = useState<Set<Category>>(new Set())
+  const [openColorGroups, setOpenColorGroups] = useState<Set<string>>(new Set())
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const t: TranslationCopy = translations[language]
 
@@ -134,6 +135,7 @@ function App(): ReactElement {
   const runHeroSearch = (searchValue: string): void => {
     const matchingSections = buildSections(filterGallery(gallery, globalColor, searchValue.trim().toLowerCase()))
     setOpenSections(new Set(matchingSections.map((section) => section.category)))
+    setOpenColorGroups(new Set(matchingSections.flatMap((section) => section.byColor.map((group) => `${section.category}-${group.color}`))))
     window.setTimeout(scrollToCatalogue, 80)
   }
 
@@ -156,6 +158,29 @@ function App(): ReactElement {
         return next
       })
     })
+  }
+
+  const toggleColorGroup = (groupKey: string): void => {
+    startTransition(() => {
+      setOpenColorGroups((current) => {
+        const next = new Set(current)
+        if (next.has(groupKey)) {
+          next.delete(groupKey)
+        } else {
+          next.add(groupKey)
+        }
+        return next
+      })
+    })
+  }
+
+  const jumpToColorGroup = (category: Category, color: Exclude<Color, '全部'>): void => {
+    const groupKey = `${category}-${color}`
+    setOpenSections((current) => new Set(current).add(category))
+    setOpenColorGroups((current) => new Set(current).add(groupKey))
+    window.setTimeout(() => {
+      document.getElementById(`color-${groupKey}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 120)
   }
 
   const handleCardKeyDown = (
@@ -253,7 +278,7 @@ function App(): ReactElement {
       </section>
 
       <section className="accordion-list">
-        {sections.map((section, index) => {
+        {sections.map((section) => {
           const sectionText = categoryCopy[section.category][language]
           const isOpen = openSections.has(section.category)
 
@@ -270,15 +295,23 @@ function App(): ReactElement {
               >
                 <div className="accordion-left">
                   <div className="category-heading">
-                    <span className="accordion-index">{String(index + 1).padStart(2, '0')}</span>
                     <h3>{sectionText.label}</h3>
+                    <span className="category-arrow" aria-hidden="true"></span>
                   </div>
                   <div className="section-colors">
                     <span className="section-colors-label">{t.colorNote}</span>
                     {section.colors.map((color) => (
-                      <span key={`${section.category}-${color}`} className="section-color-chip">
+                      <button
+                        key={`${section.category}-${color}`}
+                        type="button"
+                        className="section-color-chip"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          jumpToColorGroup(section.category, color)
+                        }}
+                      >
                         {colorCopy[color][language]}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -286,36 +319,53 @@ function App(): ReactElement {
 
               <div className="accordion-content">
                 <div className="accordion-groups">
-                  {section.byColor.map((group) => (
-                    <div key={`${section.category}-${group.color}`} className="color-group glass-card">
-                      <div className="color-group-head">
-                        <span className="color-badge">{colorCopy[group.color][language]}</span>
-                      </div>
-                      <div className="gallery-grid">
-                        {group.items.map((item) => (
-                          <article
-                            key={item.id}
-                            className="gallery-card glass-card"
-                            onClick={() => setSelectedId(item.id)}
-                            onKeyDown={(event) => handleCardKeyDown(event, item.id)}
-                            role="button"
-                            tabIndex={0}
-                          >
-                            <div className="gallery-media">
-                              <img src={item.image} alt={item.id} loading="lazy" />
+                  {section.byColor.map((group) => {
+                    const groupKey = `${section.category}-${group.color}`
+                    const isGroupOpen = openColorGroups.has(groupKey)
+
+                    return (
+                      <div
+                        key={groupKey}
+                        id={`color-${groupKey}`}
+                        className={isGroupOpen ? 'color-group glass-card is-open' : 'color-group glass-card'}
+                      >
+                        <button
+                          type="button"
+                          className="color-group-head"
+                          onClick={() => toggleColorGroup(groupKey)}
+                          aria-expanded={isGroupOpen}
+                        >
+                          <span className="color-badge">{colorCopy[group.color][language]}</span>
+                          <span className="color-group-arrow" aria-hidden="true"></span>
+                        </button>
+                        <div className="gallery-scroll">
+                          <div className="gallery-grid">
+                            {group.items.map((item) => (
+                              <article
+                                key={item.id}
+                                className="gallery-card glass-card"
+                                onClick={() => setSelectedId(item.id)}
+                                onKeyDown={(event) => handleCardKeyDown(event, item.id)}
+                                role="button"
+                                tabIndex={0}
+                              >
+                                <div className="gallery-media">
+                                  <img src={item.image} alt={item.id} loading="lazy" />
+                                </div>
+                                <div className="gallery-body">
+                                  <div className="card-head">
+                                    <span className="image-id">{item.id}</span>
+                                    <span className="mood-tag">{colorCopy[item.color][language]}</span>
+                                  </div>
+                                  <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
+                                </div>
+                              </article>
+                            ))}
                             </div>
-                            <div className="gallery-body">
-                              <div className="card-head">
-                                <span className="image-id">{item.id}</span>
-                                <span className="mood-tag">{colorCopy[item.color][language]}</span>
-                              </div>
-                              <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
-                            </div>
-                          </article>
-                        ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </article>
