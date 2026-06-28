@@ -5,23 +5,129 @@ import './App.css'
 const categoryOrder = ['戒指', '项链', '耳饰', '手链', '套装_组合图', '胸针_别针', '裸石_宝石']
 const colorOrder = ['蓝色', '黄色', '绿色', '红色', '粉色', '无明显彩钻']
 
-const categoryNotes = {
-  戒指: '高频主推款与收藏级主石，适合快速锁定客户兴趣中心。',
-  项链: '适合大图浏览与佩戴想象，重点呈现轮廓、色彩与场景感。',
-  耳饰: '适合成对查看与上身联想，方便客户快速对比不同气质。',
-  手链: '适合细节导向型客户，适合从系列感和佩戴层次切入。',
-  套装_组合图: '保留完整搭配关系，适合客户整体挑选与搭配想象。',
-  胸针_别针: '适合作为高珠点睛类展示，保持独立陈列更清晰。',
-  裸石_宝石: '保留主石素材，便于后期做定制沟通与设计延展。',
+const translations = {
+  zh: {
+    siteName: 'AzureVerse',
+    archive: 'AzureVerse Archive',
+    heroTitle: '让客户一进入，就进入 Azure Jewelry 的珠宝花园。',
+    heroText:
+      '首屏用黑白花朵绽放建立记忆点，随后露出品牌标识和分类图库。下面的每个大类都可以展开浏览，支持颜色筛选和图片放大，适合客户直接挑图。',
+    browse: '浏览产品库',
+    heroMeta: 'Bloom intro, bilingual catalogue, enlarged viewing.',
+    totalImages: '总图片数',
+    totalCategories: '主品类数',
+    dominantCategory: '主力类目',
+    scrollReveal: '向下浏览',
+    brandReveal: '品牌露出',
+    revealTitle: '先看到 Azure Jewelry 的品牌气质，再进入真正可挑选的产品层。',
+    revealText:
+      '整个前端结构更像品牌画册与产品库之间的结合体。用户先建立视觉印象，再进入可筛选、可展开、可放大的图库浏览流程。',
+    catalogue: '分类产品库',
+    catalogueTitle: '按大类展开，下面附带颜色信息，并以统一尺寸的图片模块展示。',
+    search: '搜索',
+    searchPlaceholder: '输入图片 ID、品类或颜色',
+    quickColor: '颜色快速筛选',
+    currentResults: '当前显示',
+    imageUnit: '张图片',
+    viewDetail: '点击图片可放大查看',
+    language: '语言',
+    close: '关闭',
+    imageDetail: '图片详情',
+    category: '品类',
+    primaryColor: '主石颜色',
+    suggestedColor: '识别颜色',
+    originalFile: '原始文件',
+    images: '张',
+    colorNote: '颜色',
+    sectionHint: '展开后可直接浏览该类下所有图片',
+  },
+  en: {
+    siteName: 'AzureVerse',
+    archive: 'AzureVerse Archive',
+    heroTitle: 'Let every visit open like a jewel blossom from Azure Jewelry.',
+    heroText:
+      'The homepage begins with a monochrome blooming flower, then reveals the brand mark and a layered catalogue. Each major category expands into a client-ready gallery with color filters and tap-to-enlarge viewing.',
+    browse: 'Browse Catalogue',
+    heroMeta: 'Bloom intro, bilingual catalogue, enlarged viewing.',
+    totalImages: 'Images',
+    totalCategories: 'Categories',
+    dominantCategory: 'Lead Category',
+    scrollReveal: 'Scroll to reveal',
+    brandReveal: 'Brand Reveal',
+    revealTitle: 'Let the brand appear first, then lead clients into a refined selection layer.',
+    revealText:
+      'This frontend behaves like a hybrid between an editorial brand landing and a practical product library. The visual mood comes first, then the expandable and filterable catalogue takes over.',
+    catalogue: 'Curated Catalogue',
+    catalogueTitle: 'Expand each family, show its color notes, and keep every image card perfectly consistent.',
+    search: 'Search',
+    searchPlaceholder: 'Search by image ID, category, or color',
+    quickColor: 'Quick Color Filter',
+    currentResults: 'Now showing',
+    imageUnit: 'images',
+    viewDetail: 'Tap any image to enlarge',
+    language: 'Language',
+    close: 'Close',
+    imageDetail: 'Image Detail',
+    category: 'Category',
+    primaryColor: 'Stone Color',
+    suggestedColor: 'Detected Color',
+    originalFile: 'Original File',
+    images: 'images',
+    colorNote: 'Colors',
+    sectionHint: 'Expand to browse every image inside this category',
+  },
+}
+
+const categoryCopy = {
+  戒指: {
+    zh: { label: '戒指', note: '高频主推款与收藏级主石，适合快速锁定客户兴趣。', short: '戒指' },
+    en: { label: 'Rings', note: 'Hero pieces and collector stones for fast client interest capture.', short: 'Rings' },
+  },
+  项链: {
+    zh: { label: '项链', note: '适合做大图展示与佩戴联想，轮廓感最强。', short: '项链' },
+    en: { label: 'Necklaces', note: 'Best for silhouette-led browsing and elevated styling imagination.', short: 'Necklaces' },
+  },
+  耳饰: {
+    zh: { label: '耳饰', note: '适合成对比较与上身代入，节奏轻巧。', short: '耳饰' },
+    en: { label: 'Earrings', note: 'Great for pair comparison and portrait-driven styling choices.', short: 'Earrings' },
+  },
+  手链: {
+    zh: { label: '手链', note: '适合细节导向型客户，便于查看层次与结构。', short: '手链' },
+    en: { label: 'Bracelets', note: 'Ideal for detail-focused viewing with layered structure appeal.', short: 'Bracelets' },
+  },
+  套装_组合图: {
+    zh: { label: '套装 / 组合图', note: '保留搭配关系，便于整体式挑选。', short: '套装' },
+    en: { label: 'Sets / Combined Looks', note: 'Preserves styling relationships for full-look selection.', short: 'Sets' },
+  },
+  胸针_别针: {
+    zh: { label: '胸针 / 别针', note: '高珠点睛类素材，建议独立陈列。', short: '胸针' },
+    en: { label: 'Brooches / Pins', note: 'Accent jewels best shown as their own refined group.', short: 'Brooches' },
+  },
+  裸石_宝石: {
+    zh: { label: '裸石 / 宝石', note: '保留主石素材，方便后期定制沟通。', short: '裸石' },
+    en: { label: 'Loose Stones / Gems', note: 'Stone-first assets kept for future custom conversations.', short: 'Gems' },
+  },
+}
+
+const colorCopy = {
+  蓝色: { zh: '蓝色', en: 'Blue' },
+  黄色: { zh: '黄色', en: 'Yellow' },
+  绿色: { zh: '绿色', en: 'Green' },
+  红色: { zh: '红色', en: 'Red' },
+  粉色: { zh: '粉色', en: 'Pink' },
+  无明显彩钻: { zh: '无明显彩钻', en: 'No vivid color' },
+  全部: { zh: '全部', en: 'All' },
 }
 
 function App() {
+  const [language, setLanguage] = useState('zh')
   const [query, setQuery] = useState('')
   const [globalColor, setGlobalColor] = useState('全部')
   const [selectedId, setSelectedId] = useState(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
   const [openSections, setOpenSections] = useState(() => new Set(['戒指', '项链']))
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
+  const t = translations[language]
 
   useEffect(() => {
     document.title = 'AzureVerse'
@@ -29,7 +135,7 @@ function App() {
 
   useEffect(() => {
     const onScroll = () => {
-      setShowBrandRail(window.scrollY > window.innerHeight * 0.55)
+      setShowBrandRail(window.scrollY > window.innerHeight * 0.58)
     }
 
     onScroll()
@@ -74,11 +180,13 @@ function App() {
   const filteredGallery = useMemo(() => {
     return gallery.filter((item) => {
       const matchesColor = globalColor === '全部' || item.color === globalColor
+      const translatedCategory = `${categoryCopy[item.category]?.zh.label ?? item.category} ${categoryCopy[item.category]?.en.label ?? item.category}`.toLowerCase()
+      const translatedColor = `${colorCopy[item.color]?.zh ?? item.color} ${colorCopy[item.color]?.en ?? item.color}`.toLowerCase()
       const matchesQuery =
         !deferredQuery ||
         item.id.toLowerCase().includes(deferredQuery) ||
-        item.category.toLowerCase().includes(deferredQuery) ||
-        item.color.toLowerCase().includes(deferredQuery) ||
+        translatedCategory.includes(deferredQuery) ||
+        translatedColor.includes(deferredQuery) ||
         item.originalFilename.toLowerCase().includes(deferredQuery)
 
       return matchesColor && matchesQuery
@@ -89,25 +197,29 @@ function App() {
     return categoryOrder
       .map((category) => {
         const items = filteredGallery.filter((item) => item.category === category)
-        const byColor = colorOrder
-          .map((color) => ({
-            color,
-            items: items.filter((item) => item.color === color),
-          }))
-          .filter((group) => group.items.length > 0)
+        const availableColors = colorOrder.filter((color) => items.some((item) => item.color === color))
+        const byColor = availableColors.map((color) => ({
+          color,
+          items: items.filter((item) => item.color === color),
+        }))
 
         return {
           category,
           total: items.length,
           leadImage: items[0]?.image,
-          note: categoryNotes[category] ?? '',
+          colors: availableColors,
           byColor,
         }
       })
       .filter((section) => section.total > 0)
   }, [filteredGallery])
 
-  const selectedItem = filteredGallery.find((item) => item.id === selectedId) ?? gallery.find((item) => item.id === selectedId)
+  const selectedItem =
+    filteredGallery.find((item) => item.id === selectedId) ?? gallery.find((item) => item.id === selectedId)
+
+  const dominantLabel = stats.dominant?.[0]
+    ? categoryCopy[stats.dominant[0]]?.[language].short ?? stats.dominant[0]
+    : '—'
 
   const toggleSection = (category) => {
     startTransition(() => {
@@ -131,90 +243,101 @@ function App() {
       </div>
 
       <section className="hero-stage">
-        <div className="hero-orbit">
-          <div className="petal petal-a"></div>
-          <div className="petal petal-b"></div>
-          <div className="petal petal-c"></div>
-          <div className="petal petal-d"></div>
-          <div className="petal petal-e"></div>
-          <div className="petal petal-f"></div>
-          <div className="hero-core">
+        <div className="hero-toolbar">
+          <div className="hero-brand-pill">
             <img src="/az-monogram.png" alt="Azure Jewelry monogram" />
+            <span>{t.siteName}</span>
+          </div>
+          <div className="language-switch" role="tablist" aria-label={t.language}>
+            {['zh', 'en'].map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                className={language === lang ? 'lang-pill is-active' : 'lang-pill'}
+                onClick={() => setLanguage(lang)}
+              >
+                {lang === 'zh' ? '中文' : 'EN'}
+              </button>
+            ))}
           </div>
         </div>
 
+        <div className="hero-flower" aria-hidden="true">
+          <span className="flower-petal flower-petal-top"></span>
+          <span className="flower-petal flower-petal-top-right"></span>
+          <span className="flower-petal flower-petal-bottom-right"></span>
+          <span className="flower-petal flower-petal-bottom"></span>
+          <span className="flower-petal flower-petal-bottom-left"></span>
+          <span className="flower-petal flower-petal-top-left"></span>
+          <span className="flower-core">
+            <img src="/az-monogram.png" alt="" />
+          </span>
+        </div>
+
         <div className="hero-copy">
-          <p className="eyebrow">AzureVerse Archive</p>
-          <h1>让客户一进入，就像翻开一座正在绽放的高级珠宝花园。</h1>
-          <p className="hero-text">
-            开场先用一段象征品牌气质的花朵绽放动效做记忆点，向下滚动后再露出品牌 logo 和完整图库。
-            后面的浏览逻辑则回到实用层，按品类折叠展开、按颜色筛选、按图片 ID 检索，方便客户和团队快速挑图。
-          </p>
+          <p className="eyebrow">{t.archive}</p>
+          <h1>{t.heroTitle}</h1>
+          <p className="hero-text">{t.heroText}</p>
           <div className="hero-actions">
             <a href="#catalogue" className="primary-link">
-              浏览产品库
+              {t.browse}
             </a>
-            <span className="hero-meta">Bloom intro, logo reveal, layered gallery.</span>
+            <span className="hero-meta">{t.heroMeta}</span>
           </div>
         </div>
 
         <div className="hero-stats">
-          <div className="metric-card">
-            <span className="metric-label">总图片数</span>
+          <div className="metric-card glass-card">
+            <span className="metric-label">{t.totalImages}</span>
             <strong>{stats.total}</strong>
           </div>
-          <div className="metric-card">
-            <span className="metric-label">主品类数</span>
+          <div className="metric-card glass-card">
+            <span className="metric-label">{t.totalCategories}</span>
             <strong>{stats.categories}</strong>
           </div>
-          <div className="metric-card accent">
-            <span className="metric-label">主力类目</span>
-            <strong>{stats.dominant?.[0] ?? '未分类'}</strong>
-            <span className="metric-sub">{stats.dominant?.[1] ?? 0} 张</span>
+          <div className="metric-card glass-card accent">
+            <span className="metric-label">{t.dominantCategory}</span>
+            <strong>{dominantLabel}</strong>
+            <span className="metric-sub">{stats.dominant?.[1] ?? 0} {t.images}</span>
           </div>
         </div>
 
         <div className="hero-scroll-hint">
-          <span>Scroll to reveal</span>
+          <span>{t.scrollReveal}</span>
         </div>
       </section>
 
-      <section className="logo-reveal-panel">
+      <section className="logo-reveal-panel glass-section">
         <div className="logo-stack">
           <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="brand-title-image" />
-          <p className="logo-caption">
-            Azure Jewelry 的前端展示不应该只是“图片堆叠”，而应该先有品牌气质，再进入筛选效率。
-          </p>
+          <p className="logo-caption">{t.revealText}</p>
         </div>
         <div className="logo-copy">
-          <p className="eyebrow">Brand Reveal</p>
-          <h2>先建立品牌印象，再进入客户真正会用到的产品选择层。</h2>
-          <p>
-            这里的逻辑不是把所有筛选器直接砸给客户，而是用一个更轻、更优雅的滚动转场把人带进产品世界。
-            用户滑下去以后，看到的是 Azure Jewelry 的品牌标识、结构化分类入口，以及大量可展开浏览的产品图。
-          </p>
+          <p className="eyebrow">{t.brandReveal}</p>
+          <h2>{t.revealTitle}</h2>
+          <p>{t.revealText}</p>
         </div>
       </section>
 
-      <section className="control-panel" id="catalogue">
+      <section className="control-panel glass-section" id="catalogue">
         <div className="control-header">
           <div>
-            <p className="eyebrow">Curated Catalogue</p>
-            <h2>按品类折叠浏览，按颜色和图片 ID 精准定位。</h2>
+            <p className="eyebrow">{t.catalogue}</p>
+            <h2>{t.catalogueTitle}</h2>
           </div>
           <label className="search-box">
-            <span>Search</span>
+            <span>{t.search}</span>
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="输入图片 ID、品类、颜色"
+              placeholder={t.searchPlaceholder}
             />
           </label>
         </div>
 
         <div className="global-filter-row">
-          <span className="filter-label">主石颜色快速筛选</span>
+          <span className="filter-label">{t.quickColor}</span>
           <div className="chip-row">
             {['全部', ...colorOrder].map((color) => (
               <button
@@ -223,12 +346,13 @@ function App() {
                 className={color === globalColor ? 'chip is-active' : 'chip'}
                 onClick={() => startTransition(() => setGlobalColor(color))}
               >
-                {color}
+                {colorCopy[color]?.[language] ?? color}
               </button>
             ))}
           </div>
           <div className="filter-summary">
-            当前显示 <strong>{filteredGallery.length}</strong> 张图片
+            {t.currentResults} <strong>{filteredGallery.length}</strong> {t.imageUnit}
+            <span className="summary-note">{t.viewDetail}</span>
           </div>
         </div>
       </section>
@@ -236,10 +360,12 @@ function App() {
       <section className="accordion-list">
         {groupedCategories.map((section, index) => {
           const isOpen = openSections.has(section.category)
+          const sectionText = categoryCopy[section.category]?.[language]
+
           return (
             <article
               key={section.category}
-              className={isOpen ? 'category-accordion is-open' : 'category-accordion'}
+              className={isOpen ? 'category-accordion glass-section is-open' : 'category-accordion glass-section'}
             >
               <button
                 type="button"
@@ -250,34 +376,42 @@ function App() {
                 <div className="accordion-left">
                   <span className="accordion-index">{String(index + 1).padStart(2, '0')}</span>
                   <div>
-                    <h3>{section.category}</h3>
-                    <p>{section.note}</p>
+                    <h3>{sectionText?.label ?? section.category}</h3>
+                    <p>{sectionText?.note}</p>
+                    <div className="section-colors">
+                      <span className="section-colors-label">{t.colorNote}</span>
+                      {section.colors.map((color) => (
+                        <span key={`${section.category}-${color}`} className="section-color-chip">
+                          {colorCopy[color]?.[language] ?? color}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="accordion-right">
-                  <span>{section.total} 张</span>
+                  <span>{section.total} {t.images}</span>
+                  <span className="accordion-note">{t.sectionHint}</span>
                   <span className="accordion-icon">{isOpen ? '−' : '+'}</span>
                 </div>
               </button>
 
               <div className="accordion-content">
                 <div className="accordion-preview">
-                  {section.leadImage ? (
-                    <img src={section.leadImage} alt={section.category} loading="lazy" />
-                  ) : null}
+                  {section.leadImage ? <img src={section.leadImage} alt={sectionText?.label ?? section.category} loading="lazy" /> : null}
                 </div>
+
                 <div className="accordion-groups">
                   {section.byColor.map((group) => (
-                    <div key={`${section.category}-${group.color}`} className="color-group">
+                    <div key={`${section.category}-${group.color}`} className="color-group glass-card">
                       <div className="color-group-head">
-                        <span className="color-badge">{group.color}</span>
-                        <span className="color-count">{group.items.length} 张</span>
+                        <span className="color-badge">{colorCopy[group.color]?.[language] ?? group.color}</span>
+                        <span className="color-count">{group.items.length} {t.images}</span>
                       </div>
                       <div className="gallery-grid">
                         {group.items.map((item) => (
                           <article
                             key={item.id}
-                            className="gallery-card"
+                            className="gallery-card glass-card"
                             onClick={() => setSelectedId(item.id)}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter' || event.key === ' ') {
@@ -294,10 +428,10 @@ function App() {
                             <div className="gallery-body">
                               <div className="card-head">
                                 <span className="image-id">{item.id}</span>
-                                <span className="mood-tag">{item.mood}</span>
+                                <span className="mood-tag">{colorCopy[item.color]?.[language] ?? item.color}</span>
                               </div>
                               <p className="gallery-meta">
-                                {item.color} · {item.originalFilename}
+                                {categoryCopy[item.category]?.[language].short ?? item.category}
                               </p>
                             </div>
                           </article>
@@ -315,26 +449,26 @@ function App() {
       {selectedItem ? (
         <div className="lightbox" onClick={() => setSelectedId(null)} role="presentation">
           <div
-            className="lightbox-panel"
+            className="lightbox-panel glass-section"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label={selectedItem.id}
           >
             <button type="button" className="lightbox-close" onClick={() => setSelectedId(null)}>
-              Close
+              {t.close}
             </button>
             <div className="lightbox-image">
               <img src={selectedItem.image} alt={selectedItem.id} />
             </div>
             <div className="lightbox-meta">
-              <p className="eyebrow">Image Detail</p>
+              <p className="eyebrow">{t.imageDetail}</p>
               <h3>{selectedItem.id}</h3>
               <ul>
-                <li>品类：{selectedItem.category}</li>
-                <li>主石颜色：{selectedItem.color}</li>
-                <li>建议颜色识别：{selectedItem.suggestedColor}</li>
-                <li>原始文件：{selectedItem.originalFilename}</li>
+                <li>{t.category}: {categoryCopy[selectedItem.category]?.[language].label ?? selectedItem.category}</li>
+                <li>{t.primaryColor}: {colorCopy[selectedItem.color]?.[language] ?? selectedItem.color}</li>
+                <li>{t.suggestedColor}: {selectedItem.suggestedColor}</li>
+                <li>{t.originalFile}: {selectedItem.originalFilename}</li>
               </ul>
             </div>
           </div>

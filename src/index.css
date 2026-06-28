@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg: #f3f1ea;
-  --surface: rgba(255, 252, 247, 0.9);
-  --border: rgba(13, 28, 44, 0.1);
-  --text: #0f1b2a;
-  --muted: #556173;
-  --focus: #2d7cc7;
+  --bg: #050505;
+  --surface: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #f5f5f5;
+  --muted: rgba(255, 255, 255, 0.64);
+  --focus: rgba(255, 255, 255, 0.92);
   --display: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', 'Helvetica Neue', sans-serif;
-  --soft-shadow: 0 20px 48px rgba(10, 24, 40, 0.08);
+  --soft-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
 
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(179, 203, 224, 0.46), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(225, 206, 132, 0.35), transparent 24%),
-    linear-gradient(180deg, #efede5 0%, #f8f5ef 100%);
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.04), transparent 18%),
+    linear-gradient(180deg, #030303 0%, #090909 100%);
   font-family: var(--sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -68,7 +68,7 @@ h3 {
 
 h1 {
   font-size: clamp(3rem, 7vw, 6rem);
-  color: #f7f7f4;
+  color: #f7f7f7;
 }
 
 h2 {
