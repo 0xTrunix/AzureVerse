@@ -78,6 +78,7 @@ function App(): ReactElement {
   const [openColorGroups, setOpenColorGroups] = useState<Set<string>>(new Set())
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const t: TranslationCopy = translations[language]
+  const isColorFiltered = globalColor !== '全部'
 
   useBodyScrollLock(selectedId !== null)
 
@@ -272,6 +273,7 @@ function App(): ReactElement {
         {sections.map((section) => {
           const sectionText = categoryCopy[section.category][language]
           const isOpen = openSections.has(section.category)
+          const visibleSectionItems = section.byColor.flatMap((group) => group.items)
 
           return (
             <article
@@ -289,75 +291,105 @@ function App(): ReactElement {
                     <h3>{sectionText.label}</h3>
                     <span className="category-arrow" aria-hidden="true"></span>
                   </button>
-                  <div className="section-colors">
-                    {section.colors.map((color) => (
-                      <button
-                        key={`${section.category}-${color}`}
-                        type="button"
-                        className="section-color-chip"
-                        data-color={color}
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          jumpToColorGroup(section.category, color)
-                        }}
-                      >
-                        {colorCopy[color][language]}
-                      </button>
-                    ))}
-                  </div>
+                  {!isColorFiltered ? (
+                    <div className="section-colors">
+                      {section.colors.map((color) => (
+                        <button
+                          key={`${section.category}-${color}`}
+                          type="button"
+                          className="section-color-chip"
+                          data-color={color}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            jumpToColorGroup(section.category, color)
+                          }}
+                        >
+                          {colorCopy[color][language]}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
               <div className="accordion-content">
-                <div className="accordion-groups">
-                  {section.byColor.map((group) => {
-                    const groupKey = `${section.category}-${group.color}`
-                    const isGroupOpen = openColorGroups.has(groupKey)
-
-                    return (
-                      <div
-                        key={groupKey}
-                        id={`color-${groupKey}`}
-                        className={isGroupOpen ? 'color-group glass-card is-open' : 'color-group glass-card'}
-                      >
-                        <button
-                          type="button"
-                          className="color-group-head"
-                          onClick={() => toggleColorGroup(groupKey)}
-                          aria-expanded={isGroupOpen}
+                {isColorFiltered ? (
+                  <div className="direct-gallery-panel glass-card">
+                    <div className="gallery-grid">
+                      {visibleSectionItems.map((item) => (
+                        <article
+                          key={item.id}
+                          className="gallery-card glass-card"
+                          onClick={() => setSelectedId(item.id)}
+                          onKeyDown={(event) => handleCardKeyDown(event, item.id)}
+                          role="button"
+                          tabIndex={0}
                         >
-                          <span className="color-badge" data-color={group.color}>{colorCopy[group.color][language]}</span>
-                          <span className="color-group-arrow" aria-hidden="true"></span>
-                        </button>
-                        <div className="gallery-scroll">
-                          <div className="gallery-grid">
-                            {group.items.map((item) => (
-                              <article
-                                key={item.id}
-                                className="gallery-card glass-card"
-                                onClick={() => setSelectedId(item.id)}
-                                onKeyDown={(event) => handleCardKeyDown(event, item.id)}
-                                role="button"
-                                tabIndex={0}
-                              >
-                                <div className="gallery-media">
-                                  <img src={item.image} alt={item.id} loading="lazy" />
-                                </div>
-                                <div className="gallery-body">
-                                  <div className="card-head">
-                                    <span className="image-id">{item.id}</span>
-                                    <span className="mood-tag" data-color={item.color}>{colorCopy[item.color][language]}</span>
+                          <div className="gallery-media">
+                            <img src={item.image} alt={item.id} loading="lazy" />
+                          </div>
+                          <div className="gallery-body">
+                            <div className="card-head">
+                              <span className="image-id">{item.id}</span>
+                              <span className="mood-tag" data-color={item.color}>{colorCopy[item.color][language]}</span>
+                            </div>
+                            <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="accordion-groups">
+                    {section.byColor.map((group) => {
+                      const groupKey = `${section.category}-${group.color}`
+                      const isGroupOpen = openColorGroups.has(groupKey)
+
+                      return (
+                        <div
+                          key={groupKey}
+                          id={`color-${groupKey}`}
+                          className={isGroupOpen ? 'color-group glass-card is-open' : 'color-group glass-card'}
+                        >
+                          <button
+                            type="button"
+                            className="color-group-head"
+                            onClick={() => toggleColorGroup(groupKey)}
+                            aria-expanded={isGroupOpen}
+                          >
+                            <span className="color-badge" data-color={group.color}>{colorCopy[group.color][language]}</span>
+                            <span className="color-group-arrow" aria-hidden="true"></span>
+                          </button>
+                          <div className="gallery-scroll">
+                            <div className="gallery-grid">
+                              {group.items.map((item) => (
+                                <article
+                                  key={item.id}
+                                  className="gallery-card glass-card"
+                                  onClick={() => setSelectedId(item.id)}
+                                  onKeyDown={(event) => handleCardKeyDown(event, item.id)}
+                                  role="button"
+                                  tabIndex={0}
+                                >
+                                  <div className="gallery-media">
+                                    <img src={item.image} alt={item.id} loading="lazy" />
                                   </div>
-                                  <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
-                                </div>
-                              </article>
-                            ))}
+                                  <div className="gallery-body">
+                                    <div className="card-head">
+                                      <span className="image-id">{item.id}</span>
+                                      <span className="mood-tag" data-color={item.color}>{colorCopy[item.color][language]}</span>
+                                    </div>
+                                    <p className="gallery-meta">{categoryCopy[item.category][language].short}</p>
+                                  </div>
+                                </article>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                  })}
-                </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
             </article>
           )

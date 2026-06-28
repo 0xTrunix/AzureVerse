@@ -513,6 +513,24 @@
   width: 100%;
 }
 
+.direct-gallery-panel {
+  max-height: min(78vh, 820px);
+  overflow-y: auto;
+  padding: 16px;
+  border-radius: 22px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+}
+
+.direct-gallery-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.direct-gallery-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
 .color-group {
   padding: 0;
   border-radius: 18px;
