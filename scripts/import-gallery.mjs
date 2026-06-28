@@ -18,6 +18,8 @@ const dataPath = path.join(dataDir, 'gallery.json')
 
 fs.mkdirSync(imageDir, { recursive: true })
 fs.mkdirSync(dataDir, { recursive: true })
+fs.rmSync(imageDir, { recursive: true, force: true })
+fs.mkdirSync(imageDir, { recursive: true })
 
 if (fs.existsSync(sourceLogo)) {
   fs.copyFileSync(sourceLogo, path.join(publicDir, 'az-monogram.png'))

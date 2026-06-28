@@ -1,6 +1,5 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
-import type { KeyboardEvent as ReactKeyboardEvent, ReactElement } from 'react'
-import type { CSSProperties } from 'react'
+import type { FormEvent, KeyboardEvent as ReactKeyboardEvent, ReactElement } from 'react'
 import './App.css'
 import galleryData from './data/gallery.json'
 import { categoryCopy, categoryOrder, colorCopy, colorOrder, translations } from './content/catalogue'
@@ -16,7 +15,7 @@ import type {
 const gallery = galleryData as GalleryItem[]
 
 function formatDisplayId(id: string): string {
-  return id.replace('AZJ-IMG-', 'AZJ-')
+  return id
 }
 
 function useBodyScrollLock(isLocked: boolean): void {
@@ -59,7 +58,6 @@ function buildSections(items: GalleryItem[]): CategorySection[] {
       return {
         category,
         total: categoryItems.length,
-        leadImage: categoryItems[0]?.image,
         colors,
         byColor: colors.map((color) => ({
           color,
@@ -76,8 +74,7 @@ function App(): ReactElement {
   const [globalColor, setGlobalColor] = useState<Color>('全部')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
-  const [heroProgress, setHeroProgress] = useState(0)
-  const [openSections, setOpenSections] = useState<Set<Category>>(new Set(['戒指', '项链']))
+  const [openSections, setOpenSections] = useState<Set<Category>>(new Set())
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const t: TranslationCopy = translations[language]
 
@@ -89,8 +86,6 @@ function App(): ReactElement {
 
   useEffect(() => {
     const onScroll = (): void => {
-      const nextProgress = Math.max(0, Math.min(1, window.scrollY / Math.max(window.innerHeight * 0.9, 1)))
-      setHeroProgress(nextProgress)
       setShowBrandRail(window.scrollY > window.innerHeight * 0.72)
     }
 
@@ -114,23 +109,6 @@ function App(): ReactElement {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [selectedId])
 
-  const stats = useMemo(() => {
-    const counts = gallery.reduce<Record<Category, number>>((accumulator, item) => {
-      accumulator[item.category] = (accumulator[item.category] ?? 0) + 1
-      return accumulator
-    }, {} as Record<Category, number>)
-
-    const dominant = Object.entries(counts).sort((left, right) => right[1] - left[1])[0] as
-      | [Category, number]
-      | undefined
-
-    return {
-      total: gallery.length,
-      categories: Object.keys(counts).length,
-      dominant,
-    }
-  }, [])
-
   const filteredGallery = useMemo(
     () => filterGallery(gallery, globalColor, deferredQuery),
     [deferredQuery, globalColor],
@@ -143,7 +121,28 @@ function App(): ReactElement {
     [filteredGallery, selectedId],
   )
 
-  const dominantLabel = stats.dominant ? categoryCopy[stats.dominant[0]][language].short : '—'
+  const scrollToCatalogue = (): void => {
+    const catalogue = document.getElementById('catalogue')
+    if (!catalogue) {
+      return
+    }
+
+    const targetTop = catalogue.getBoundingClientRect().top + window.scrollY - 16
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
+  }
+
+  const runHeroSearch = (searchValue: string): void => {
+    const matchingSections = buildSections(filterGallery(gallery, globalColor, searchValue.trim().toLowerCase()))
+    setOpenSections(new Set(matchingSections.map((section) => section.category)))
+    window.setTimeout(scrollToCatalogue, 80)
+  }
+
+  const handleHeroSearchSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+    const form = event.currentTarget
+    const input = form.elements.namedItem('hero-search')
+    runHeroSearch(input instanceof HTMLInputElement ? input.value : query)
+  }
 
   const toggleSection = (category: Category): void => {
     startTransition(() => {
@@ -173,18 +172,11 @@ function App(): ReactElement {
     <div className="page-shell">
       <div className={showBrandRail ? 'brand-rail is-visible' : 'brand-rail'}>
         <img src="/az-monogram.png" alt="Azure Jewelry monogram" className="brand-rail-monogram" />
-        <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="brand-rail-text" />
       </div>
 
+      <div className="content-shell">
       <section className="hero-stage">
-        <div
-          className="hero-scene"
-          style={{ ['--hero-progress' as string]: heroProgress.toFixed(3) } as CSSProperties}
-        >
-          <div className="hero-scene-glow hero-scene-glow-a"></div>
-          <div className="hero-scene-glow hero-scene-glow-b"></div>
-          <div className="hero-scene-vignette"></div>
-        </div>
+        <div className="hero-gradient-overlay" aria-hidden="true"></div>
         <div className="hero-toolbar">
           <div className="hero-brand-pill">
             <img src="/az-monogram.png" alt="Azure Jewelry monogram" />
@@ -204,72 +196,25 @@ function App(): ReactElement {
           </div>
         </div>
 
-        <div className="hero-flower" aria-hidden="true">
-          <span className="flower-petal flower-petal-top">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-petal flower-petal-top-right">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-petal flower-petal-bottom-right">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-petal flower-petal-bottom">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-petal flower-petal-bottom-left">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-petal flower-petal-top-left">
-            <span className="flower-petal-inner"></span>
-          </span>
-          <span className="flower-core">
-            <img src="/az-monogram.png" alt="" />
-          </span>
-        </div>
-
-        <div className="hero-copy">
-          <p className="eyebrow">{t.archive}</p>
-          <h1>{t.heroTitle}</h1>
-          <p className="hero-text">{t.heroText}</p>
-          <div className="hero-actions">
-            <a href="#catalogue" className="primary-link">
-              {t.browse}
-            </a>
-            <span className="hero-meta">{t.heroMeta}</span>
-          </div>
-        </div>
-
-        <div className="hero-stats">
-          <div className="metric-card glass-card">
-            <span className="metric-label">{t.totalImages}</span>
-            <strong>{stats.total}</strong>
-          </div>
-          <div className="metric-card glass-card">
-            <span className="metric-label">{t.totalCategories}</span>
-            <strong>{stats.categories}</strong>
-          </div>
-          <div className="metric-card glass-card accent">
-            <span className="metric-label">{t.dominantCategory}</span>
-            <strong>{dominantLabel}</strong>
-            <span className="metric-sub">{stats.dominant?.[1] ?? 0} {t.images}</span>
-          </div>
-        </div>
-
-        <div className="hero-scroll-hint">
-          <span>{t.scrollReveal}</span>
-        </div>
-      </section>
-
-      <section className="logo-reveal-panel glass-section">
-        <div className="logo-stack">
-          <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="brand-title-image" />
-          <p className="logo-caption">{t.revealText}</p>
-        </div>
-        <div className="logo-copy">
-          <p className="eyebrow">{t.brandReveal}</p>
-          <h2>{t.revealTitle}</h2>
-          <p>{t.revealText}</p>
+        <div className="hero-content">
+          <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="hero-logo-mark" />
+          <form className="hero-search-form" onSubmit={handleHeroSearchSubmit}>
+            <label className="hero-search-label" htmlFor="hero-search">{t.search}</label>
+            <input
+              id="hero-search"
+              name="hero-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault()
+                  runHeroSearch(event.currentTarget.value)
+                }
+              }}
+              placeholder={t.heroSearchPlaceholder}
+            />
+          </form>
         </div>
       </section>
 
@@ -304,10 +249,6 @@ function App(): ReactElement {
               </button>
             ))}
           </div>
-          <div className="filter-summary">
-            {t.currentResults} <strong>{filteredGallery.length}</strong> {t.imageUnit}
-            <span className="summary-note">{t.viewDetail}</span>
-          </div>
         </div>
       </section>
 
@@ -328,40 +269,27 @@ function App(): ReactElement {
                 aria-expanded={isOpen}
               >
                 <div className="accordion-left">
-                  <span className="accordion-index">{String(index + 1).padStart(2, '0')}</span>
-                  <div>
+                  <div className="category-heading">
+                    <span className="accordion-index">{String(index + 1).padStart(2, '0')}</span>
                     <h3>{sectionText.label}</h3>
-                    <p>{sectionText.note}</p>
-                    <div className="section-colors">
-                      <span className="section-colors-label">{t.colorNote}</span>
-                      {section.colors.map((color) => (
-                        <span key={`${section.category}-${color}`} className="section-color-chip">
-                          {colorCopy[color][language]}
-                        </span>
-                      ))}
-                    </div>
                   </div>
-                </div>
-                <div className="accordion-right">
-                  <span>{section.total} {t.images}</span>
-                  <span className="accordion-note">{t.sectionHint}</span>
-                  <span className="accordion-icon">{isOpen ? '−' : '+'}</span>
+                  <div className="section-colors">
+                    <span className="section-colors-label">{t.colorNote}</span>
+                    {section.colors.map((color) => (
+                      <span key={`${section.category}-${color}`} className="section-color-chip">
+                        {colorCopy[color][language]}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </button>
 
               <div className="accordion-content">
-                <div className="accordion-preview">
-                  {section.leadImage ? (
-                    <img src={section.leadImage} alt={sectionText.label} loading="lazy" />
-                  ) : null}
-                </div>
-
                 <div className="accordion-groups">
                   {section.byColor.map((group) => (
                     <div key={`${section.category}-${group.color}`} className="color-group glass-card">
                       <div className="color-group-head">
                         <span className="color-badge">{colorCopy[group.color][language]}</span>
-                        <span className="color-count">{group.items.length} {t.images}</span>
                       </div>
                       <div className="gallery-grid">
                         {group.items.map((item) => (
@@ -422,6 +350,7 @@ function App(): ReactElement {
           </div>
         </div>
       ) : null}
+      </div>
     </div>
   )
 }

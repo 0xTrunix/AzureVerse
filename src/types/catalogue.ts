@@ -31,35 +31,19 @@ export interface GalleryItem {
 
 export interface TranslationCopy {
   siteName: string
-  archive: string
-  heroTitle: string
-  heroText: string
-  browse: string
-  heroMeta: string
-  totalImages: string
-  totalCategories: string
-  dominantCategory: string
-  scrollReveal: string
-  brandReveal: string
-  revealTitle: string
-  revealText: string
+  heroSearchPlaceholder: string
   catalogue: string
   catalogueTitle: string
   search: string
   searchPlaceholder: string
   quickColor: string
-  currentResults: string
-  imageUnit: string
-  viewDetail: string
   language: string
   close: string
   imageDetail: string
   number: string
   category: string
   primaryColor: string
-  images: string
   colorNote: string
-  sectionHint: string
 }
 
 export interface CategoryText {
@@ -76,7 +60,6 @@ export interface CategoryGroup {
 export interface CategorySection {
   category: Category
   total: number
-  leadImage?: string
   colors: Exclude<Color, '全部'>[]
   byColor: CategoryGroup[]
 }
