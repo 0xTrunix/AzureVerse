@@ -7,6 +7,7 @@ const sourceCsv = path.join(
   '各种素材图收集_已编号分类/00_清单/image_classification_results.csv',
 )
 const sourceLogo = path.join(workspaceRoot, '视频LOGO/AZ_monogram.png')
+const sourceTextLogo = path.join(workspaceRoot, '视频LOGO/AzureJewelry_Text.png')
 const sourceFavicon = path.join(workspaceRoot, '相关图片/azurejewelry-favicon-192.png')
 
 const projectRoot = path.join(workspaceRoot, 'AzureVerse')
@@ -20,6 +21,10 @@ fs.mkdirSync(dataDir, { recursive: true })
 
 if (fs.existsSync(sourceLogo)) {
   fs.copyFileSync(sourceLogo, path.join(publicDir, 'az-monogram.png'))
+}
+
+if (fs.existsSync(sourceTextLogo)) {
+  fs.copyFileSync(sourceTextLogo, path.join(publicDir, 'azure-jewelry-text.png'))
 }
 
 if (fs.existsSync(sourceFavicon)) {
