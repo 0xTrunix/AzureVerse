@@ -77,11 +77,11 @@ const colorMoodMap = {
   绿色: 'Emerald Garden',
   红色: 'Rouge Flame',
   粉色: 'Rose Blush',
-  无明显彩钻: 'Diamond Light',
+  白钻: 'Diamond Light',
 }
 
 const categoryOrder = ['戒指', '项链', '耳饰', '手链', '套装_组合图', '胸针_别针', '裸石_宝石']
-const colorOrder = ['蓝色', '黄色', '绿色', '红色', '粉色', '无明显彩钻']
+const colorOrder = ['蓝色', '黄色', '绿色', '红色', '粉色', '白钻']
 
 const output = records.map((row) => {
   const sourceFile = row.final_path

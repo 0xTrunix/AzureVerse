@@ -2,7 +2,7 @@ import type { Category, CategoryText, Color, Language, TranslationCopy } from '.
 
 export const categoryOrder: Category[] = ['戒指', '项链', '耳饰', '手链', '套装_组合图', '胸针_别针', '裸石_宝石']
 
-export const colorOrder: Exclude<Color, '全部'>[] = ['蓝色', '黄色', '绿色', '红色', '粉色', '无明显彩钻']
+export const colorOrder: Exclude<Color, '全部'>[] = ['蓝色', '黄色', '绿色', '红色', '粉色', '白钻']
 
 export const translations: Record<Language, TranslationCopy> = {
   zh: {
@@ -108,6 +108,6 @@ export const colorCopy: Record<Color, Record<Language, string>> = {
   绿色: { zh: '绿色', en: 'Green' },
   红色: { zh: '红色', en: 'Red' },
   粉色: { zh: '粉色', en: 'Pink' },
-  无明显彩钻: { zh: '无明显彩钻', en: 'No vivid color' },
+  白钻: { zh: '白钻', en: 'White Diamond' },
   全部: { zh: '全部', en: 'All' },
 }

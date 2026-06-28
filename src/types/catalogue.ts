@@ -15,7 +15,7 @@ export type Color =
   | '绿色'
   | '红色'
   | '粉色'
-  | '无明显彩钻'
+  | '白钻'
   | '全部'
 
 export interface GalleryItem {
