@@ -10,18 +10,16 @@ const translations = {
     siteName: 'AzureVerse',
     archive: 'AzureVerse Archive',
     heroTitle: '让客户一进入，就进入 Azure Jewelry 的珠宝花园。',
-    heroText:
-      '首屏用黑白花朵绽放建立记忆点，随后露出品牌标识和分类图库。下面的每个大类都可以展开浏览，支持颜色筛选和图片放大，适合客户直接挑图。',
+    heroText: 'Curated high jewelry selection.',
     browse: '浏览产品库',
-    heroMeta: 'Bloom intro, bilingual catalogue, enlarged viewing.',
+    heroMeta: 'Azure Jewelry',
     totalImages: '总图片数',
     totalCategories: '主品类数',
     dominantCategory: '主力类目',
     scrollReveal: '向下浏览',
     brandReveal: '品牌露出',
-    revealTitle: '先看到 Azure Jewelry 的品牌气质，再进入真正可挑选的产品层。',
-    revealText:
-      '整个前端结构更像品牌画册与产品库之间的结合体。用户先建立视觉印象，再进入可筛选、可展开、可放大的图库浏览流程。',
+    revealTitle: 'Azure Jewelry',
+    revealText: 'Fine Jewelry Catalogue',
     catalogue: '分类产品库',
     catalogueTitle: '按大类展开，下面附带颜色信息，并以统一尺寸的图片模块展示。',
     search: '搜索',
@@ -32,11 +30,10 @@ const translations = {
     viewDetail: '点击图片可放大查看',
     language: '语言',
     close: '关闭',
-    imageDetail: '图片详情',
+    imageDetail: '产品信息',
+    number: '编号',
     category: '品类',
     primaryColor: '主石颜色',
-    suggestedColor: '识别颜色',
-    originalFile: '原始文件',
     images: '张',
     colorNote: '颜色',
     sectionHint: '展开后可直接浏览该类下所有图片',
@@ -45,18 +42,16 @@ const translations = {
     siteName: 'AzureVerse',
     archive: 'AzureVerse Archive',
     heroTitle: 'Let every visit open like a jewel blossom from Azure Jewelry.',
-    heroText:
-      'The homepage begins with a monochrome blooming flower, then reveals the brand mark and a layered catalogue. Each major category expands into a client-ready gallery with color filters and tap-to-enlarge viewing.',
+    heroText: 'Curated high jewelry selection.',
     browse: 'Browse Catalogue',
-    heroMeta: 'Bloom intro, bilingual catalogue, enlarged viewing.',
+    heroMeta: 'Azure Jewelry',
     totalImages: 'Images',
     totalCategories: 'Categories',
     dominantCategory: 'Lead Category',
     scrollReveal: 'Scroll to reveal',
     brandReveal: 'Brand Reveal',
-    revealTitle: 'Let the brand appear first, then lead clients into a refined selection layer.',
-    revealText:
-      'This frontend behaves like a hybrid between an editorial brand landing and a practical product library. The visual mood comes first, then the expandable and filterable catalogue takes over.',
+    revealTitle: 'Azure Jewelry',
+    revealText: 'Fine Jewelry Catalogue',
     catalogue: 'Curated Catalogue',
     catalogueTitle: 'Expand each family, show its color notes, and keep every image card perfectly consistent.',
     search: 'Search',
@@ -67,11 +62,10 @@ const translations = {
     viewDetail: 'Tap any image to enlarge',
     language: 'Language',
     close: 'Close',
-    imageDetail: 'Image Detail',
+    imageDetail: 'Product Detail',
+    number: 'Number',
     category: 'Category',
     primaryColor: 'Stone Color',
-    suggestedColor: 'Detected Color',
-    originalFile: 'Original File',
     images: 'images',
     colorNote: 'Colors',
     sectionHint: 'Expand to browse every image inside this category',
@@ -216,6 +210,8 @@ function App() {
 
   const selectedItem =
     filteredGallery.find((item) => item.id === selectedId) ?? gallery.find((item) => item.id === selectedId)
+
+  const formatDisplayId = (id) => id.replace('AZJ-IMG-', 'AZJ-')
 
   const dominantLabel = stats.dominant?.[0]
     ? categoryCopy[stats.dominant[0]]?.[language].short ?? stats.dominant[0]
@@ -463,12 +459,11 @@ function App() {
             </div>
             <div className="lightbox-meta">
               <p className="eyebrow">{t.imageDetail}</p>
-              <h3>{selectedItem.id}</h3>
+              <h3>{formatDisplayId(selectedItem.id)}</h3>
               <ul>
+                <li>{t.number}: {formatDisplayId(selectedItem.id)}</li>
                 <li>{t.category}: {categoryCopy[selectedItem.category]?.[language].label ?? selectedItem.category}</li>
                 <li>{t.primaryColor}: {colorCopy[selectedItem.color]?.[language] ?? selectedItem.color}</li>
-                <li>{t.suggestedColor}: {selectedItem.suggestedColor}</li>
-                <li>{t.originalFile}: {selectedItem.originalFilename}</li>
               </ul>
             </div>
           </div>
