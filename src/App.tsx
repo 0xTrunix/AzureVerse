@@ -257,6 +257,15 @@ function App(): ReactElement {
     }, 420)
   }
 
+  const handleBrandRailClick = (): void => {
+    if (selectedItem) {
+      setSelectedId(null)
+      return
+    }
+
+    scrollToSearch()
+  }
+
   const scrollToCategory = (category: Category): void => {
     const section = document.getElementById(`category-${category}`)
     if (!section) {
@@ -340,13 +349,18 @@ function App(): ReactElement {
     }
   }
 
+  const isBrandRailVisible = showBrandRail || Boolean(selectedItem)
+  const brandRailLabel = selectedItem
+    ? language === 'zh' ? '退出图片详情' : 'Close image detail'
+    : language === 'zh' ? '返回顶部搜索' : 'Back to search'
+
   return (
     <div className="page-shell">
       <button
         type="button"
-        className={showBrandRail ? 'brand-rail is-visible' : 'brand-rail'}
-        onClick={scrollToSearch}
-        aria-label={language === 'zh' ? '返回顶部搜索' : 'Back to search'}
+        className={isBrandRailVisible ? 'brand-rail is-visible' : 'brand-rail'}
+        onClick={handleBrandRailClick}
+        aria-label={brandRailLabel}
       >
         <img src="/az-monogram.png" alt="Azure Jewelry monogram" className="brand-rail-monogram" />
       </button>
@@ -564,14 +578,6 @@ function App(): ReactElement {
             aria-modal="true"
             aria-label={selectedItem.id}
           >
-            <button
-              type="button"
-              className="lightbox-brand-button"
-              onClick={() => setSelectedId(null)}
-              aria-label={language === 'zh' ? '退出图片详情' : 'Close image detail'}
-            >
-              <img src="/az-monogram.png" alt="" />
-            </button>
             <div className="lightbox-image">
               <img src={selectedItem.image} alt={selectedItem.id} />
             </div>
