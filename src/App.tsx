@@ -350,6 +350,36 @@ function App(): ReactElement {
     ? language === 'zh' ? '收起品类导航' : 'Close category menu'
     : language === 'zh' ? '打开品类导航' : 'Open category menu'
 
+  const renderCategorySidebar = (className: string): ReactElement => (
+    <aside className={`category-sidebar ${className}`} aria-label={language === 'zh' ? '品类导航' : 'Category navigation'}>
+      <div className="sidebar-kicker">{t.catalogue}</div>
+      <button
+        type="button"
+        className={activeCategory === '全部' ? 'sidebar-link is-active' : 'sidebar-link'}
+        onClick={() => handleCategorySelect('全部')}
+      >
+        <span>{language === 'zh' ? '全部' : 'All'}</span>
+        <em>{filteredGallery.length}</em>
+      </button>
+      {categoryOrder.map((category) => {
+        const section = sections.find((item) => item.category === category)
+        const sectionText = categoryCopy[category][language]
+
+        return (
+          <button
+            key={category}
+            type="button"
+            className={activeCategory === category ? 'sidebar-link is-active' : 'sidebar-link'}
+            onClick={() => handleCategorySelect(category)}
+          >
+            <span>{sectionText.label}</span>
+            <em>{section?.total ?? 0}</em>
+          </button>
+        )
+      })}
+    </aside>
+  )
+
   return (
     <div className={isSidebarOpen ? 'page-shell sidebar-is-open' : 'page-shell'}>
       <button
@@ -374,6 +404,8 @@ function App(): ReactElement {
           <span></span>
         </button>
       ) : null}
+
+      {isMobileNav ? renderCategorySidebar('mobile-category-sidebar') : null}
 
       <div className="content-shell">
       <section className="hero-stage">
@@ -425,33 +457,7 @@ function App(): ReactElement {
       </section>
 
       <section className="catalogue-shell glass-section" id="catalogue">
-        <aside className="category-sidebar" aria-label={language === 'zh' ? '品类导航' : 'Category navigation'}>
-          <div className="sidebar-kicker">{t.catalogue}</div>
-          <button
-            type="button"
-            className={activeCategory === '全部' ? 'sidebar-link is-active' : 'sidebar-link'}
-            onClick={() => handleCategorySelect('全部')}
-          >
-            <span>{language === 'zh' ? '全部' : 'All'}</span>
-            <em>{filteredGallery.length}</em>
-          </button>
-          {categoryOrder.map((category) => {
-            const section = sections.find((item) => item.category === category)
-            const sectionText = categoryCopy[category][language]
-
-            return (
-              <button
-                key={category}
-                type="button"
-                className={activeCategory === category ? 'sidebar-link is-active' : 'sidebar-link'}
-                onClick={() => handleCategorySelect(category)}
-              >
-                <span>{sectionText.label}</span>
-                <em>{section?.total ?? 0}</em>
-              </button>
-            )
-          })}
-        </aside>
+        {renderCategorySidebar('desktop-category-sidebar')}
 
         <div className="catalogue-main">
           <div className="global-filter-row">
