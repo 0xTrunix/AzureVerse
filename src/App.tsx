@@ -180,6 +180,7 @@ function buildSections(items: GalleryItem[]): CategorySection[] {
 function App(): ReactElement {
   const [language, setLanguage] = useState<Language>('zh')
   const [query, setQuery] = useState('')
+  const [isComposingSearch, setIsComposingSearch] = useState(false)
   const [globalColor, setGlobalColor] = useState<Color>('全部')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
@@ -273,6 +274,18 @@ function App(): ReactElement {
     }, 120)
   }
 
+  useEffect(() => {
+    if (isComposingSearch || normalizeText(query).length < 2) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      runHeroSearch(query)
+    }, 650)
+
+    return () => window.clearTimeout(timer)
+  }, [isComposingSearch, query])
+
   const handleHeroSearchSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     const form = event.currentTarget
@@ -343,14 +356,20 @@ function App(): ReactElement {
 
         <div className="hero-content">
           <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="hero-logo-mark" />
+          <p className="hero-tagline">{t.heroTagline}</p>
           <form className="hero-search-form" onSubmit={handleHeroSearchSubmit}>
-            <label className="hero-search-label" htmlFor="hero-search">{t.search}</label>
+            <label className="sr-only" htmlFor="hero-search">{t.search}</label>
             <input
               id="hero-search"
               name="hero-search"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              onCompositionStart={() => setIsComposingSearch(true)}
+              onCompositionEnd={(event) => {
+                setIsComposingSearch(false)
+                runHeroSearch(event.currentTarget.value)
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
                   event.preventDefault()

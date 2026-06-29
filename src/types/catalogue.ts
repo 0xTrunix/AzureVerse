@@ -32,6 +32,7 @@ export interface GalleryItem {
 export interface TranslationCopy {
   siteName: string
   heroSearchPlaceholder: string
+  heroTagline: string
   catalogue: string
   catalogueTitle: string
   search: string
