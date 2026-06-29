@@ -462,6 +462,14 @@ function App(): ReactElement {
         <div className="catalogue-main">
           <div className="global-filter-row">
             <div className="chip-row">
+              <button
+                type="button"
+                className={globalColor === '全部' ? 'chip show-all-chip is-active' : 'chip show-all-chip'}
+                onClick={() => startTransition(() => setGlobalColor('全部'))}
+                data-color="全部"
+              >
+                {language === 'zh' ? '展示所有' : 'Show All'}
+              </button>
               {colorOrder.map((color) => (
                 <button
                   key={color}
