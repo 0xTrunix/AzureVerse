@@ -18,6 +18,10 @@ function formatDisplayId(id: string): string {
   return id
 }
 
+function thumbnailImage(id: string): string {
+  return `/gallery-thumbs/${id}.webp`
+}
+
 function normalizeText(value: string): string {
   return value.toLowerCase().replace(/\s+/g, '')
 }
@@ -436,7 +440,7 @@ function App(): ReactElement {
                 {isColorFiltered ? (
                   <div className="direct-gallery-panel glass-card">
                     <div className="gallery-grid">
-                      {visibleSectionItems.map((item) => (
+                      {visibleSectionItems.map((item, index) => (
                         <article
                           key={item.id}
                           className="gallery-card glass-card"
@@ -446,7 +450,13 @@ function App(): ReactElement {
                           tabIndex={0}
                         >
                           <div className="gallery-media">
-                            <img src={item.image} alt={item.id} loading="lazy" />
+                            <img
+                              src={thumbnailImage(item.id)}
+                              alt={item.id}
+                              loading={index < 6 ? 'eager' : 'lazy'}
+                              decoding="async"
+                              fetchPriority={index < 3 ? 'high' : 'auto'}
+                            />
                           </div>
                           <div className="gallery-body">
                             <div className="card-head">
@@ -490,7 +500,7 @@ function App(): ReactElement {
                         >
                           <div className="gallery-scroll">
                             <div className="gallery-grid">
-                              {group.items.map((item) => (
+                              {group.items.map((item, index) => (
                                 <article
                                   key={item.id}
                                   className="gallery-card glass-card"
@@ -500,7 +510,13 @@ function App(): ReactElement {
                                   tabIndex={0}
                                 >
                                   <div className="gallery-media">
-                                    <img src={item.image} alt={item.id} loading="lazy" />
+                                    <img
+                                      src={thumbnailImage(item.id)}
+                                      alt={item.id}
+                                      loading={index < 6 ? 'eager' : 'lazy'}
+                                      decoding="async"
+                                      fetchPriority={index < 3 ? 'high' : 'auto'}
+                                    />
                                   </div>
                                   <div className="gallery-body">
                                     <div className="card-head">
