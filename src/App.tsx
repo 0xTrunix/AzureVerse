@@ -432,7 +432,7 @@ function App(): ReactElement {
             className={activeCategory === '全部' ? 'sidebar-link is-active' : 'sidebar-link'}
             onClick={() => handleCategorySelect('全部')}
           >
-            <span>{language === 'zh' ? '全部作品' : 'All Pieces'}</span>
+            <span>{language === 'zh' ? '全部' : 'All'}</span>
             <em>{filteredGallery.length}</em>
           </button>
           {categoryOrder.map((category) => {
