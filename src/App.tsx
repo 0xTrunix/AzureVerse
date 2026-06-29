@@ -19,7 +19,7 @@ function formatDisplayId(id: string): string {
 }
 
 function thumbnailImage(id: string): string {
-  return `/gallery-thumbs/${id}.webp`
+  return `/gallery-thumbs/${id}.webp?v=cover-20260629`
 }
 
 function normalizeText(value: string): string {
