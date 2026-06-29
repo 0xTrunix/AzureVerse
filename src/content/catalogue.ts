@@ -8,7 +8,6 @@ export const translations: Record<Language, TranslationCopy> = {
   zh: {
     siteName: 'AzureVerse',
     heroSearchPlaceholder: '蓝钻戒指、项链、白钻...',
-    heroTagline: '快速找出你喜欢的钻石',
     catalogue: 'Collections',
     catalogueTitle: '珠宝图册',
     search: '搜索',
@@ -25,7 +24,6 @@ export const translations: Record<Language, TranslationCopy> = {
   en: {
     siteName: 'AzureVerse',
     heroSearchPlaceholder: 'Blue rings, necklaces, white diamonds...',
-    heroTagline: 'Find the diamond you love, faster',
     catalogue: 'Collections',
     catalogueTitle: 'Fine Jewelry Catalogue',
     search: 'Search',

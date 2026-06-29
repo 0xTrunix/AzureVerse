@@ -356,7 +356,6 @@ function App(): ReactElement {
 
         <div className="hero-content">
           <img src="/azure-jewelry-text.png" alt="Azure Jewelry" className="hero-logo-mark" />
-          <p className="hero-tagline">{t.heroTagline}</p>
           <form className="hero-search-form" onSubmit={handleHeroSearchSubmit}>
             <label className="sr-only" htmlFor="hero-search">{t.search}</label>
             <input

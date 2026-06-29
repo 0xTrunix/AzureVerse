@@ -60,16 +60,6 @@
     "mood": "Deep Ocean"
   },
   {
-    "id": "AZJ-0116",
-    "title": "AZJ-0116",
-    "category": "戒指",
-    "color": "蓝色",
-    "suggestedColor": "紫色",
-    "originalFilename": "微信图片_20260628140644.jpg",
-    "image": "/gallery-images/AZJ-0116.jpg",
-    "mood": "Deep Ocean"
-  },
-  {
     "id": "AZJ-0131",
     "title": "AZJ-0131",
     "category": "戒指",
@@ -270,16 +260,6 @@
     "mood": "Emerald Garden"
   },
   {
-    "id": "AZJ-0121",
-    "title": "AZJ-0121",
-    "category": "戒指",
-    "color": "绿色",
-    "suggestedColor": "紫色",
-    "originalFilename": "微信图片_20260628140728.jpg",
-    "image": "/gallery-images/AZJ-0121.jpg",
-    "mood": "Emerald Garden"
-  },
-  {
     "id": "AZJ-0016",
     "title": "AZJ-0016",
     "category": "戒指",
@@ -337,16 +317,6 @@
     "suggestedColor": "红色",
     "originalFilename": "微信图片_20260628140640.jpg",
     "image": "/gallery-images/AZJ-0115.jpg",
-    "mood": "Rouge Flame"
-  },
-  {
-    "id": "AZJ-0117",
-    "title": "AZJ-0117",
-    "category": "戒指",
-    "color": "红色",
-    "suggestedColor": "红色",
-    "originalFilename": "微信图片_20260628140647.jpg",
-    "image": "/gallery-images/AZJ-0117.jpg",
     "mood": "Rouge Flame"
   },
   {
@@ -670,16 +640,6 @@
     "mood": "Emerald Garden"
   },
   {
-    "id": "AZJ-0113",
-    "title": "AZJ-0113",
-    "category": "项链",
-    "color": "绿色",
-    "suggestedColor": "蓝色",
-    "originalFilename": "微信图片_20260628140634.jpg",
-    "image": "/gallery-images/AZJ-0113.jpg",
-    "mood": "Emerald Garden"
-  },
-  {
     "id": "AZJ-0125",
     "title": "AZJ-0125",
     "category": "项链",
@@ -860,16 +820,6 @@
     "mood": "Emerald Garden"
   },
   {
-    "id": "AZJ-0120",
-    "title": "AZJ-0120",
-    "category": "耳饰",
-    "color": "绿色",
-    "suggestedColor": "绿色",
-    "originalFilename": "微信图片_20260628140725.jpg",
-    "image": "/gallery-images/AZJ-0120.jpg",
-    "mood": "Emerald Garden"
-  },
-  {
     "id": "AZJ-0124",
     "title": "AZJ-0124",
     "category": "耳饰",
@@ -977,16 +927,6 @@
     "suggestedColor": "蓝色",
     "originalFilename": "微信图片_20260628140622.jpg",
     "image": "/gallery-images/AZJ-0109.jpg",
-    "mood": "Deep Ocean"
-  },
-  {
-    "id": "AZJ-0119",
-    "title": "AZJ-0119",
-    "category": "手链",
-    "color": "蓝色",
-    "suggestedColor": "蓝色",
-    "originalFilename": "微信图片_20260628140721.jpg",
-    "image": "/gallery-images/AZJ-0119.jpg",
     "mood": "Deep Ocean"
   },
   {
@@ -1337,16 +1277,6 @@
     "suggestedColor": "紫色",
     "originalFilename": "微信图片_20260628135121.jpg",
     "image": "/gallery-images/AZJ-0028.jpg",
-    "mood": "Emerald Garden"
-  },
-  {
-    "id": "AZJ-0114",
-    "title": "AZJ-0114",
-    "category": "裸石_宝石",
-    "color": "绿色",
-    "suggestedColor": "紫色",
-    "originalFilename": "微信图片_20260628140637.jpg",
-    "image": "/gallery-images/AZJ-0114.jpg",
     "mood": "Emerald Garden"
   }
 ]
