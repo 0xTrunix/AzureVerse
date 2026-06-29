@@ -247,6 +247,16 @@ function App(): ReactElement {
     window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
   }
 
+  const scrollToSearch = (): void => {
+    const searchInput = document.getElementById('hero-search')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.setTimeout(() => {
+      if (searchInput instanceof HTMLInputElement) {
+        searchInput.focus({ preventScroll: true })
+      }
+    }, 420)
+  }
+
   const scrollToCategory = (category: Category): void => {
     const section = document.getElementById(`category-${category}`)
     if (!section) {
@@ -332,9 +342,14 @@ function App(): ReactElement {
 
   return (
     <div className="page-shell">
-      <div className={showBrandRail ? 'brand-rail is-visible' : 'brand-rail'}>
+      <button
+        type="button"
+        className={showBrandRail ? 'brand-rail is-visible' : 'brand-rail'}
+        onClick={scrollToSearch}
+        aria-label={language === 'zh' ? '返回顶部搜索' : 'Back to search'}
+      >
         <img src="/az-monogram.png" alt="Azure Jewelry monogram" className="brand-rail-monogram" />
-      </div>
+      </button>
 
       <div className="content-shell">
       <section className="hero-stage">
@@ -549,8 +564,13 @@ function App(): ReactElement {
             aria-modal="true"
             aria-label={selectedItem.id}
           >
-            <button type="button" className="lightbox-close" onClick={() => setSelectedId(null)}>
-              {t.close}
+            <button
+              type="button"
+              className="lightbox-brand-button"
+              onClick={() => setSelectedId(null)}
+              aria-label={language === 'zh' ? '退出图片详情' : 'Close image detail'}
+            >
+              <img src="/az-monogram.png" alt="" />
             </button>
             <div className="lightbox-image">
               <img src={selectedItem.image} alt={selectedItem.id} />
