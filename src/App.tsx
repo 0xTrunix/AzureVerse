@@ -253,16 +253,6 @@ function App(): ReactElement {
     [activeCategory, filteredGallery],
   )
 
-  const activeCategoryText = activeCategory === '全部'
-    ? {
-        label: language === 'zh' ? '全部作品' : 'All Pieces',
-        short: language === 'zh' ? '全部' : 'All',
-        note: language === 'zh'
-          ? '先浏览完整图册，再通过左侧品类与颜色快速收窄。'
-          : 'Browse the full catalogue first, then narrow by category and color.',
-      }
-    : categoryCopy[activeCategory][language]
-
   const selectedItem = useMemo(
     () => filteredGallery.find((item) => item.id === selectedId) ?? gallery.find((item) => item.id === selectedId) ?? null,
     [filteredGallery, selectedId],
@@ -294,12 +284,11 @@ function App(): ReactElement {
       return
     }
 
-    if (isMobileNav) {
-      setIsSidebarOpen((current) => !current)
-      return
-    }
-
     scrollToSearch()
+  }
+
+  const handleMobileMenuToggle = (): void => {
+    setIsSidebarOpen((current) => !current)
   }
 
   const runHeroSearch = (searchValue: string): void => {
@@ -356,11 +345,10 @@ function App(): ReactElement {
   const isBrandRailVisible = showBrandRail || Boolean(selectedItem) || isMobileNav
   const brandRailLabel = selectedItem
     ? language === 'zh' ? '退出图片详情' : 'Close image detail'
-    : isMobileNav
-      ? isSidebarOpen
-        ? language === 'zh' ? '收起品类导航' : 'Close category menu'
-        : language === 'zh' ? '打开品类导航' : 'Open category menu'
-      : language === 'zh' ? '返回顶部搜索' : 'Back to search'
+    : language === 'zh' ? '返回顶部搜索' : 'Back to search'
+  const mobileMenuLabel = isSidebarOpen
+    ? language === 'zh' ? '收起品类导航' : 'Close category menu'
+    : language === 'zh' ? '打开品类导航' : 'Open category menu'
 
   return (
     <div className={isSidebarOpen ? 'page-shell sidebar-is-open' : 'page-shell'}>
@@ -369,10 +357,23 @@ function App(): ReactElement {
         className={isBrandRailVisible ? 'brand-rail is-visible' : 'brand-rail'}
         onClick={handleBrandRailClick}
         aria-label={brandRailLabel}
-        aria-expanded={isMobileNav ? isSidebarOpen : undefined}
       >
         <img src="/az-monogram.png" alt="Azure Jewelry monogram" className="brand-rail-monogram" />
       </button>
+
+      {isMobileNav ? (
+        <button
+          type="button"
+          className={isSidebarOpen ? 'mobile-menu-toggle is-open' : 'mobile-menu-toggle'}
+          onClick={handleMobileMenuToggle}
+          aria-label={mobileMenuLabel}
+          aria-expanded={isSidebarOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      ) : null}
 
       <div className="content-shell">
       <section className="hero-stage">
@@ -453,16 +454,6 @@ function App(): ReactElement {
         </aside>
 
         <div className="catalogue-main">
-          <div className="catalogue-heading">
-            <div>
-              <p className="eyebrow">{t.catalogueTitle}</p>
-              <h2>{activeCategoryText.label}</h2>
-            </div>
-            <div className="result-pill">
-              {visibleGallery.length} {language === 'zh' ? '件藏品' : 'curated pieces'}
-            </div>
-          </div>
-
           <div className="global-filter-row">
             <div className="chip-row">
               {colorOrder.map((color) => (
