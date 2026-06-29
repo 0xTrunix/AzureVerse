@@ -189,6 +189,8 @@ function App(): ReactElement {
   const [activeCategory, setActiveCategory] = useState<Category | '全部'>('全部')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showBrandRail, setShowBrandRail] = useState(false)
+  const [isMobileNav, setIsMobileNav] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const t: TranslationCopy = translations[language]
 
@@ -206,6 +208,20 @@ function App(): ReactElement {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 860px)')
+    const syncMobileNav = (): void => {
+      setIsMobileNav(mediaQuery.matches)
+      if (!mediaQuery.matches) {
+        setIsSidebarOpen(false)
+      }
+    }
+
+    syncMobileNav()
+    mediaQuery.addEventListener('change', syncMobileNav)
+    return () => mediaQuery.removeEventListener('change', syncMobileNav)
   }, [])
 
   useEffect(() => {
@@ -278,6 +294,11 @@ function App(): ReactElement {
       return
     }
 
+    if (isMobileNav) {
+      setIsSidebarOpen((current) => !current)
+      return
+    }
+
     scrollToSearch()
   }
 
@@ -328,21 +349,27 @@ function App(): ReactElement {
     startTransition(() => {
       setActiveCategory(category)
       setGlobalColor('全部')
+      setIsSidebarOpen(false)
     })
   }
 
-  const isBrandRailVisible = showBrandRail || Boolean(selectedItem)
+  const isBrandRailVisible = showBrandRail || Boolean(selectedItem) || isMobileNav
   const brandRailLabel = selectedItem
     ? language === 'zh' ? '退出图片详情' : 'Close image detail'
-    : language === 'zh' ? '返回顶部搜索' : 'Back to search'
+    : isMobileNav
+      ? isSidebarOpen
+        ? language === 'zh' ? '收起品类导航' : 'Close category menu'
+        : language === 'zh' ? '打开品类导航' : 'Open category menu'
+      : language === 'zh' ? '返回顶部搜索' : 'Back to search'
 
   return (
-    <div className="page-shell">
+    <div className={isSidebarOpen ? 'page-shell sidebar-is-open' : 'page-shell'}>
       <button
         type="button"
         className={isBrandRailVisible ? 'brand-rail is-visible' : 'brand-rail'}
         onClick={handleBrandRailClick}
         aria-label={brandRailLabel}
+        aria-expanded={isMobileNav ? isSidebarOpen : undefined}
       >
         <img src="/az-monogram.png" alt="Azure Jewelry monogram" className="brand-rail-monogram" />
       </button>
