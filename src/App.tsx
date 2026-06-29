@@ -18,6 +18,108 @@ function formatDisplayId(id: string): string {
   return id
 }
 
+function normalizeText(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, '')
+}
+
+function categoryNeedles(category: Category): string[] {
+  const copy = categoryCopy[category]
+  const values = [
+    category,
+    copy.zh.label,
+    copy.zh.short,
+    copy.en.label,
+    copy.en.short,
+  ]
+
+  if (category === '戒指') {
+    values.push('ring')
+  }
+
+  if (category === '项链') {
+    values.push('necklace')
+  }
+
+  if (category === '耳饰') {
+    values.push('earring')
+  }
+
+  if (category === '手链') {
+    values.push('bracelet')
+  }
+
+  if (category === '套装_组合图') {
+    values.push('set', 'combined')
+  }
+
+  if (category === '胸针_别针') {
+    values.push('brooch', 'pin')
+  }
+
+  if (category === '裸石_宝石') {
+    values.push('gem', 'stone')
+  }
+
+  return values.map(normalizeText)
+}
+
+function colorNeedles(color: Exclude<Color, '全部'>): string[] {
+  const copy = colorCopy[color]
+  const plainColor: Record<Exclude<Color, '全部'>, string[]> = {
+    蓝色: ['blue'],
+    黄色: ['yellow'],
+    绿色: ['green'],
+    红色: ['red'],
+    粉色: ['pink'],
+    白钻: ['white'],
+  }
+
+  return [
+    color,
+    copy.zh,
+    copy.en,
+    ...plainColor[color],
+  ].map(normalizeText)
+}
+
+function detectCategory(search: string): Category | null {
+  const normalizedSearch = normalizeText(search)
+  return categoryOrder.find((category) => (
+    categoryNeedles(category).some((needle) => needle.length > 0 && normalizedSearch.includes(needle))
+  )) ?? null
+}
+
+function detectColor(search: string): Exclude<Color, '全部'> | null {
+  const normalizedSearch = normalizeText(search)
+  return colorOrder.find((color) => (
+    colorNeedles(color).some((needle) => needle.length > 0 && normalizedSearch.includes(needle))
+  )) ?? null
+}
+
+function searchTerms(search: string): string[] {
+  const normalizedSearch = normalizeText(search)
+  if (normalizedSearch.length === 0) {
+    return []
+  }
+
+  const terms = search
+    .toLowerCase()
+    .split(/\s+/)
+    .map(normalizeText)
+    .filter(Boolean)
+  const detectedCategory = detectCategory(search)
+  const detectedColor = detectColor(search)
+
+  if (detectedCategory || detectedColor) {
+    return [
+      ...(detectedCategory ? categoryNeedles(detectedCategory).slice(0, 1) : []),
+      ...(detectedColor ? colorNeedles(detectedColor).slice(1, 2) : []),
+    ]
+  }
+
+  return terms.length > 0 ? terms : [normalizedSearch]
+}
+
 function useBodyScrollLock(isLocked: boolean): void {
   useEffect(() => {
     if (!isLocked) {
@@ -34,16 +136,23 @@ function useBodyScrollLock(isLocked: boolean): void {
 }
 
 function filterGallery(items: GalleryItem[], color: Color, search: string): GalleryItem[] {
+  const terms = searchTerms(search)
+
   return items.filter((item) => {
     const matchesColor = color === '全部' || item.color === color
-    const translatedCategory = `${categoryCopy[item.category].zh.label} ${categoryCopy[item.category].en.label}`.toLowerCase()
-    const translatedColor = `${colorCopy[item.color].zh} ${colorCopy[item.color].en}`.toLowerCase()
-    const matchesSearch =
-      search.length === 0 ||
-      item.id.toLowerCase().includes(search) ||
-      translatedCategory.includes(search) ||
-      translatedColor.includes(search) ||
-      item.originalFilename.toLowerCase().includes(search)
+    const searchableText = normalizeText([
+      item.id,
+      item.originalFilename,
+      item.category,
+      categoryCopy[item.category].zh.label,
+      categoryCopy[item.category].zh.short,
+      categoryCopy[item.category].en.label,
+      categoryCopy[item.category].en.short,
+      item.color,
+      colorCopy[item.color].zh,
+      colorCopy[item.color].en,
+    ].join(' '))
+    const matchesSearch = terms.length === 0 || terms.every((term) => searchableText.includes(term))
 
     return matchesColor && matchesSearch
   })
@@ -133,11 +242,35 @@ function App(): ReactElement {
     window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
   }
 
+  const scrollToCategory = (category: Category): void => {
+    const section = document.getElementById(`category-${category}`)
+    if (!section) {
+      scrollToCatalogue()
+      return
+    }
+
+    const targetTop = section.getBoundingClientRect().top + window.scrollY - 18
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
+  }
+
   const runHeroSearch = (searchValue: string): void => {
-    const matchingSections = buildSections(filterGallery(gallery, globalColor, searchValue.trim().toLowerCase()))
+    const search = searchValue.trim().toLowerCase()
+    const detectedColor = detectColor(search)
+    const nextColor: Color = detectedColor ?? '全部'
+    const matchingSections = buildSections(filterGallery(gallery, nextColor, search))
+    const firstCategory = matchingSections[0]?.category
+
+    setQuery(searchValue)
+    setGlobalColor(nextColor)
     setOpenSections(new Set(matchingSections.map((section) => section.category)))
-    setOpenColorGroups(new Set(matchingSections.flatMap((section) => section.byColor.map((group) => `${section.category}-${group.color}`))))
-    window.setTimeout(scrollToCatalogue, 80)
+    setOpenColorGroups(new Set())
+    window.setTimeout(() => {
+      if (firstCategory) {
+        scrollToCategory(firstCategory)
+      } else {
+        scrollToCatalogue()
+      }
+    }, 120)
   }
 
   const handleHeroSearchSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -161,24 +294,10 @@ function App(): ReactElement {
     })
   }
 
-  const toggleColorGroup = (groupKey: string): void => {
-    startTransition(() => {
-      setOpenColorGroups((current) => {
-        const next = new Set(current)
-        if (next.has(groupKey)) {
-          next.delete(groupKey)
-        } else {
-          next.add(groupKey)
-        }
-        return next
-      })
-    })
-  }
-
   const jumpToColorGroup = (category: Category, color: Exclude<Color, '全部'>): void => {
     const groupKey = `${category}-${color}`
     setOpenSections((current) => new Set(current).add(category))
-    setOpenColorGroups((current) => new Set(current).add(groupKey))
+    setOpenColorGroups(new Set([groupKey]))
     window.setTimeout(() => {
       document.getElementById(`color-${groupKey}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 120)
@@ -278,6 +397,7 @@ function App(): ReactElement {
           return (
             <article
               key={section.category}
+              id={`category-${section.category}`}
               className={isOpen ? 'category-accordion glass-section is-open' : 'category-accordion glass-section'}
             >
               <div className="accordion-trigger">
@@ -340,21 +460,16 @@ function App(): ReactElement {
                       const groupKey = `${section.category}-${group.color}`
                       const isGroupOpen = openColorGroups.has(groupKey)
 
+                      if (!isGroupOpen) {
+                        return null
+                      }
+
                       return (
                         <div
                           key={groupKey}
                           id={`color-${groupKey}`}
                           className={isGroupOpen ? 'color-group glass-card is-open' : 'color-group glass-card'}
                         >
-                          <button
-                            type="button"
-                            className="color-group-head"
-                            onClick={() => toggleColorGroup(groupKey)}
-                            aria-expanded={isGroupOpen}
-                          >
-                            <span className="color-badge" data-color={group.color}>{colorCopy[group.color][language]}</span>
-                            <span className="color-group-arrow" aria-hidden="true"></span>
-                          </button>
                           <div className="gallery-scroll">
                             <div className="gallery-grid">
                               {group.items.map((item) => (
